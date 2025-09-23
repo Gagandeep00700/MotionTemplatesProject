@@ -11,6 +11,3 @@ export interface UserProfile{
     follower_count:number;
     created_at:Date;
 }
-export interface Template{
-
-}
