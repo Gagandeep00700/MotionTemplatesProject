@@ -35,7 +35,7 @@ export default function EditProfilePage() {
     setLoading(true)
     if (!validate()) return;
     if(user?.id){
-   let url=await uploadProfilePic(user?.id,avatar)
+   const url=await uploadProfilePic(user?.id,avatar)
     // TODO: Submit form data to your backend or supabase
     try{
       const {data,error}=await supabase.from('users').update({username:username,bio:bio,avatar_url:url}).eq('id',user?.id)
