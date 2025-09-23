@@ -11,7 +11,7 @@ export default function EditProfilePage() {
   const [bio, setBio] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ username?: string; bio?: string }>({});
-  const [errorMessage,setErrorMessage]=useState()
+  const [errorMessage,setErrorMessage]=useState<string>()
   const [loading,setLoading]=useState(false)
   const [success,setSuccess]=useState(false)
   const {user}=useAuth()
@@ -34,8 +34,12 @@ export default function EditProfilePage() {
     e.preventDefault();
     setLoading(true)
     if (!validate()) return;
+    if (!avatar) {
+        console.log("No file selected");
+        return;
+    }
     if(user?.id){
-   const url=await uploadProfilePic(user?.id,avatar)
+   const url=await uploadProfilePic(user?.id,avatar!)
     // TODO: Submit form data to your backend or supabase
     try{
       const {data,error}=await supabase.from('users').update({username:username,bio:bio,avatar_url:url}).eq('id',user?.id)

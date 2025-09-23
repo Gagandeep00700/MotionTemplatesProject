@@ -1,9 +1,13 @@
 import { supabase } from "@/app/supabaseClient";
-export async function uploadProfilePic(user_ID:string,pfp:File)
+export async function uploadProfilePic(user_ID:string,pfp:File | null)
 {
-    const fileName=pfp.name
+  if(!pfp)
+  {
+    return
+  }
+    const fileName=pfp?.name
     const path=`/Profile_Pics/${user_ID}_${fileName}`
-    const {data,error}=await supabase.storage.from('Profile_Pics').upload(path,pfp)
+    const {data,error}=await supabase.storage.from('Profile_Pics').upload(path,pfp!)
     if(error) throw error;
     
     const { data: urlData } = supabase
