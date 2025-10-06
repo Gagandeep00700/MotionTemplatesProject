@@ -124,7 +124,7 @@ export default function Navbar() {
               key={link.name}
               href={link.href}
               className={`${
-                pathname === link.href ? "text-indigo-400" : "text-gray-300"
+                pathname === link.href ? "text-indigo-400 z-50" : "text-gray-300 z-50"
               }`}
               onClick={() => setMenuOpen(false)}
             >
