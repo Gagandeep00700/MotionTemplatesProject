@@ -200,7 +200,10 @@ const UploadVideo=async()=>{
           <label className="block text-sm mb-1">Upload Template File</label>
           <input
             type="file"
-            onChange={(e)=>{setUploadStructure(prev=>({...prev,templateFile:e.target.files[0]}))}}
+            onChange={(e)=>{
+              const files = e.target.files;
+              const file = files && files.length > 0 ? files[0] : null;
+              setUploadStructure(prev=>({...prev,templateFile:file}))}}
             accept="video/*"
             className="w-full text-sm text-gray-400"
           />
@@ -223,7 +226,10 @@ const UploadVideo=async()=>{
       <input
         type="file"
         accept="video/*"
-        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateVideo:e.target.files[0]}))}}
+        onChange={(e)=>{
+          const files = e.target.files;
+          const file = files && files.length > 0 ? files[0] : null;
+          setUploadStructure(prev=>({...prev,templateVideo:file}))}}
         className="w-full mb-3 text-sm text-gray-400"
       />
 
@@ -232,7 +238,10 @@ const UploadVideo=async()=>{
       <input
         type="file"
         accept="image/*"
-        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateThumbnail:e.target.files[0]}))}}
+        onChange={(e)=>{
+          const files = e.target.files;
+          const file = files && files.length > 0 ? files[0] : null;
+          setUploadStructure(prev=>({...prev,templateThumbnail:file}))}}
         className="w-full mb-4 text-sm text-gray-400"
       />
 
