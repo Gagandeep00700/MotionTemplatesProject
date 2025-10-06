@@ -1,9 +1,135 @@
 "use client";
 import { useState } from "react";
-
+import { Template } from "../../../lib/interfaces/UserProfile";
+import { supabase } from "../supabaseClient";
+import { useAuth } from "../../../contexts/auth-context";
 export default function UploadTemplate() {
   const [mode, setMode] = useState<"file" | "prompt">("file");
+  const {user}=useAuth()
+  const [uploadStructure,setUploadStructure]=useState<Template>({
+    templateTitle:"",
+    templateDescription:"",
+    templateTags:"",
+    templateMode:"",
+    templateVideo:null,
+    templatePrompt:"",
+    templateThumbnail:null,
+    templateFile:null,
+  })
+  const [loading,setLoading]=useState(false)
+    function validateUploadForm(data:Template) {
+  const errors: string[] = [];
 
+  // Title
+  if (!data.templateTitle.trim()) {
+    errors.push("Title is required.");
+  }
+
+  // Description
+  if (!data.templateDescription.trim()) {
+    errors.push("Description is required.");
+  } else if (
+    data.templateDescription.length < 30 ||
+    data.templateDescription.length > 250
+  ) {
+    errors.push("Description must be between 30 and 250 characters.");
+  }
+
+  // Mode-specific validation
+  if (data.templateMode === "file") {
+    if (!data.templateDescription) {
+      errors.push("Template file is required.");
+    }
+  } else if (data.templateMode === "prompt") {
+    if (!data.templatePrompt || !data.templatePrompt.trim()) {
+      errors.push("Prompt is required when 'Prompt' mode is selected.");
+    }
+  }
+
+  // Video
+  if (!data.templateVideo) {
+    errors.push("Video file is required.");
+  } else if (!data.templateVideo.type.startsWith("video/")) {
+    errors.push("Uploaded video must be a valid video file.");
+  }
+
+  // Thumbnail
+  if (!data.templateThumbnail) {
+    errors.push("Thumbnail image is required.");
+  } else if (!data.templateThumbnail.type.startsWith("image/")) {
+    errors.push("Uploaded thumbnail must be a valid image file.");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+const UploadTemplate=async()=>{
+  if(uploadStructure.templateFile)
+  {
+    const {data,error}=await supabase.storage.from("templates").upload(`/templates/${Date.now()}`,uploadStructure.templateFile!)
+    if(data)
+    {
+      return supabase.storage.from("templates").getPublicUrl(data.path).data.publicUrl
+    }else{
+      return error;
+    }
+  }
+}
+const UploadVideo=async()=>{
+  try{
+    if(uploadStructure.templateVideo)
+    {
+        const {data,error}=await supabase.storage.from("previews").upload(`/previews/${user?.id}/${Date.now()}`,uploadStructure.templateVideo!)
+        if(data)
+        {
+          return supabase.storage.from("previews").getPublicUrl(data.path).data.publicUrl
+        }
+    }
+    
+  }catch(error)
+  {
+      console.error("Error while uploading video")
+  }
+}
+  const handleSubmit=async()=>{
+    setLoading(true)
+    const validateUpload=validateUploadForm(uploadStructure)
+    try{
+    if(validateUpload.errors.length===0)
+    {
+      const File_URL=await UploadTemplate()
+      const videoUrl=await UploadVideo()
+      console.log(File_URL)
+      const {data,error}=await supabase.from("templates").insert({
+        user_id:user?.id,
+        title:uploadStructure.templateTitle,
+        description:uploadStructure.templateDescription,
+        tags:uploadStructure.templateTags,
+        Ai_prompts:uploadStructure.templatePrompt,
+        file_url:File_URL,
+        preview_url:videoUrl
+      })
+      if(error){
+        setLoading(false)
+        console.error("Error while uploading:",error)
+      }
+      if(data)
+      {
+        console.log(data);
+      }
+    }else{
+      console.log(validateUpload.errors)
+    }
+  }catch(error)
+  {
+    console.error("error while uploading Template",error)
+  }finally{
+    setLoading(false)
+  }
+  
+  }
   return (
     <div className="max-w-md mx-auto p-6 bg-black text-white rounded-lg border border-gray-500">
       <h2 className="text-xl font-bold mb-4 text-center">Upload Template</h2>
@@ -12,7 +138,9 @@ export default function UploadTemplate() {
       <label className="block text-sm mb-1">Template Title</label>
       <input
         type="text"
+        value={uploadStructure.templateTitle}
         className="w-full mb-3 p-2 rounded bg-black border border-gray-600 focus:outline-none"
+        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateTitle:e.target.value}))}}
         placeholder="Enter template title"
       />
 
@@ -23,6 +151,8 @@ export default function UploadTemplate() {
       <textarea
         rows={3}
         className="w-full mb-3 p-2 rounded bg-black border border-gray-600 focus:outline-none"
+        value={uploadStructure.templateDescription}
+        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateDescription:e.target.value}))}}
         placeholder="Write a short description"
       />
 
@@ -31,6 +161,8 @@ export default function UploadTemplate() {
       <input
         type="text"
         className="w-full mb-3 p-2 rounded bg-black border border-gray-600 focus:outline-none"
+        value={uploadStructure.templateTags}
+        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateTags:e.target.value}))}}
         placeholder="e.g. travel, vlog, cinematic"
       />
 
@@ -67,6 +199,8 @@ export default function UploadTemplate() {
           <label className="block text-sm mb-1">Upload Template File</label>
           <input
             type="file"
+            onChange={(e)=>{setUploadStructure(prev=>({...prev,templateFile:e.target.files[0]}))}}
+            accept="video/*"
             className="w-full text-sm text-gray-400"
           />
         </div>
@@ -76,6 +210,8 @@ export default function UploadTemplate() {
           <textarea
             rows={3}
             className="w-full p-2 rounded bg-black border border-gray-600 focus:outline-none"
+            value={uploadStructure.templatePrompt}
+            onChange={(e)=>setUploadStructure(prev=>({...prev,templatePrompt:e.target.value}))}
             placeholder="Enter your editing instructions prompt"
           />
         </div>
@@ -86,6 +222,7 @@ export default function UploadTemplate() {
       <input
         type="file"
         accept="video/*"
+        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateVideo:e.target.files[0]}))}}
         className="w-full mb-3 text-sm text-gray-400"
       />
 
@@ -94,12 +231,13 @@ export default function UploadTemplate() {
       <input
         type="file"
         accept="image/*"
+        onChange={(e)=>{setUploadStructure(prev=>({...prev,templateThumbnail:e.target.files[0]}))}}
         className="w-full mb-4 text-sm text-gray-400"
       />
 
       {/* Submit */}
-      <button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition">
-        Upload
+      <button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition" onClick={handleSubmit}>
+        {loading ? "Uploading" : "Upload"}
       </button>
     </div>
   );
