@@ -52,8 +52,10 @@ export default function HomePage() {
         if (error) {
           console.log("Error while getting videos", error);
         }
-        console.log(data);
-        setVideos(data);
+        if(data)
+        {
+          setVideos(data);
+        }
       } catch (error) {
         console.log(error);
       } finally {
