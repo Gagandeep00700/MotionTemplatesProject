@@ -33,7 +33,7 @@ export interface Video{
     preview_url:string;
     users:{
         id:number;
-        useername:string;
+        username:string;
         email:string;
         avatar_url:string;
     };
