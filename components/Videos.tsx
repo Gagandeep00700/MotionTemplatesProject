@@ -97,7 +97,7 @@ export default function HomePage() {
               <div className="absolute bottom-3 left-3 flex items-center space-x-2">
                 <img
                   src={v.users.avatar_url}
-                  alt={v.user}
+                  alt={v.users.username}
                   className="w-7 h-7 rounded-full border border-gray-500"
                 />
                 <p className="text-gray-200 text-sm font-medium">{v.creator}</p>
