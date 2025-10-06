@@ -31,5 +31,11 @@ export interface Video{
     tags:[];
     file_url:string;
     preview_url:string;
+    users:{
+        id:number;
+        useername:string;
+        email:string;
+        avatar_url:string;
+    };
     created_at:Date;
 }

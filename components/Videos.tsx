@@ -84,7 +84,7 @@ export default function HomePage() {
                 />
               ) : (
                 <img
-                  src={v.thumbnail}
+                  src={'/logo.png'}
                   alt={v.users.username}
                   className="w-full h-60 object-cover"
                 />
