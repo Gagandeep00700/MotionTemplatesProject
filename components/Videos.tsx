@@ -100,7 +100,7 @@ export default function HomePage() {
                   alt={v.users.username}
                   className="w-7 h-7 rounded-full border border-gray-500"
                 />
-                <p className="text-gray-200 text-sm font-medium">{v.creator}</p>
+                <p className="text-gray-200 text-sm font-medium">{`Hello`}</p>
               </div>
 
               {/* Buttons (visible only on hover) */}
