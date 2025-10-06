@@ -21,7 +21,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const router=useRouter()
   return (
-    <nav className="bg-[#0D0D0D] text-white py-[16px] px-[32px] flex items-center justify-between relative">
+    <nav className="bg-[#0D0D0D] text-white py-[16px] px-[32px] flex items-center justify-between relative z-50">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2">
         <Image
