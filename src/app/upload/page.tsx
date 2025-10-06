@@ -7,6 +7,7 @@ export default function UploadTemplate() {
   const [mode, setMode] = useState<"file" | "prompt">("file");
   const {user}=useAuth()
   const [uploadStructure,setUploadStructure]=useState<Template>({
+    id:0,
     templateTitle:"",
     templateDescription:"",
     templateTags:"",
