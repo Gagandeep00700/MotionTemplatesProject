@@ -1,7 +1,7 @@
 "use client";
 import { supabase } from "@/app/supabaseClient";
 import { useEffect, useState } from "react";
-import { Template, Video } from "../lib/interfaces/UserProfile";
+import { Template, Video } from "../lib/interfaces/interfaces";
 
 const videos = [
   {
@@ -84,7 +84,7 @@ export default function HomePage() {
                 />
               ) : (
                 <img
-                  src={'/logo.png'}
+                  src={v.Thumbnail_url}
                   alt={v.users.username}
                   className="w-full h-60 object-cover"
                 />
@@ -100,7 +100,7 @@ export default function HomePage() {
                   alt={v.users.username}
                   className="w-7 h-7 rounded-full border border-gray-500"
                 />
-                <p className="text-gray-200 text-sm font-medium">{`Hello`}</p>
+                <p className="text-gray-200 text-sm font-medium">{v.users.username}</p>
               </div>
 
               {/* Buttons (visible only on hover) */}

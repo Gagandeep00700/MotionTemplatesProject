@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../../../contexts/auth-context";
 import { supabase } from "@/app/supabaseClient";
-import { UserProfile } from "../../../../lib/interfaces/UserProfile";
+import { UserProfile } from "../../../../lib/interfaces/interfaces";
 import { useParams ,useRouter} from "next/navigation";
 export default function ProfilePage() {
   const {user,loading,signOut}=useAuth()
@@ -11,7 +11,6 @@ export default function ProfilePage() {
   const [errorMessage,setErrorMessage]=useState<string>('')
   const {id}=useParams()
   const [isOwnProfile,setIsOwnProfile]=useState(false)
-  const [noProfile,setNoProfile]=useState()
   const router=useRouter()
   const posts = [
     {

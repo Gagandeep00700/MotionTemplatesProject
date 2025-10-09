@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Template } from "../../../lib/interfaces/UserProfile";
+import { Template } from "../../../lib/interfaces/interfaces";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../../../contexts/auth-context";
 export default function UploadTemplate() {
@@ -94,6 +94,28 @@ const UploadVideo=async()=>{
       console.error("Error while uploading video")
   }
 }
+const UploadThumbnail=async()=>{
+  try{
+    if(uploadStructure.templateThumbnail)
+    {
+        const {data,error}=await supabase.storage.from('Thumbnails').upload(`/${user?.id}/${Date.now()}/`,uploadStructure.templateThumbnail)
+        if(error)
+        {
+          console.log("Error while uploading thumbnail",error)
+        }
+        if(data)
+        {
+          return supabase.storage.from('Thumbnails').getPublicUrl(data.path).data.publicUrl
+        }
+    }
+    
+  }catch(error)
+  {
+    console.log("error while uploading thumbnail",error)
+  }
+  
+
+}
   const handleSubmit=async()=>{
     setLoading(true)
     const validateUpload=validateUploadForm(uploadStructure)
@@ -102,7 +124,7 @@ const UploadVideo=async()=>{
     {
       const File_URL=await UploadTemplate()
       const videoUrl=await UploadVideo()
-      console.log(File_URL)
+      const Thumbnail_url=await UploadThumbnail()
       const {data,error}=await supabase.from("templates").insert({
         user_id:user?.id,
         title:uploadStructure.templateTitle,
@@ -110,7 +132,8 @@ const UploadVideo=async()=>{
         tags:uploadStructure.templateTags,
         Ai_prompts:uploadStructure.templatePrompt,
         file_url:File_URL,
-        preview_url:videoUrl
+        preview_url:videoUrl,
+        Thumbnail_url:Thumbnail_url
       })
       if(error){
         setLoading(false)

@@ -31,6 +31,7 @@ export interface Video{
     tags:[];
     file_url:string;
     preview_url:string;
+    Thumbnail_url:string;
     users:{
         id:number;
         username:string;
