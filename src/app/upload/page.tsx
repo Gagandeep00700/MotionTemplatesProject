@@ -87,6 +87,9 @@ const UploadVideo=async()=>{
     if(uploadStructure.templateVideo)
     {
         const {data,error}=await supabase.storage.from("previews").upload(`/previews/${user?.id}/${Date.now()}`,uploadStructure.templateVideo!)
+        if(error){
+          console.error(error)
+        }
         if(data)
         {
           return supabase.storage.from("previews").getPublicUrl(data.path).data.publicUrl
@@ -161,7 +164,7 @@ const UploadThumbnail=async()=>{
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-white bg-black">
-        <p className="text-lg mb-4">No profile found. You Can't upload anything</p>
+        <p className="text-lg mb-4">No profile found. You Can&apos;t upload anything</p>
         <button
           onClick={() => router.push("/auth")}
           className="w-max p-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition"
