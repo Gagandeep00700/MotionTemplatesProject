@@ -5,11 +5,11 @@ import { useAuth } from "../../../../contexts/auth-context";
 import { supabase } from "@/app/supabaseClient";
 import { UserProfile } from "../../../../lib/interfaces/interfaces";
 import { useParams ,useRouter} from "next/navigation";
-import { Cabin_Sketch } from "next/font/google";
+// import { Cabin_Sketch } from "next/font/google";
 export default function ProfilePage() {
   const {user,loading,signOut}=useAuth()
   const [userProfile,setUserProfile]=useState<UserProfile | undefined>(undefined)
-  const [errorMessage,setErrorMessage]=useState<string>('')
+  // const [errorMessage,setErrorMessage]=useState<string>('')
   const {id}=useParams()
   const [isOwnProfile,setIsOwnProfile]=useState(false)
   const router=useRouter()
