@@ -5,6 +5,7 @@ import { useAuth } from "../../../../contexts/auth-context";
 import { supabase } from "@/app/supabaseClient";
 import { UserProfile } from "../../../../lib/interfaces/interfaces";
 import { useParams ,useRouter} from "next/navigation";
+import { Cabin_Sketch } from "next/font/google";
 export default function ProfilePage() {
   const {user,loading,signOut}=useAuth()
   const [userProfile,setUserProfile]=useState<UserProfile>()
@@ -32,34 +33,25 @@ export default function ProfilePage() {
       creator: "Motion template User",
     },
   ];
-  // if (user && !userProfile) {
-  //   return (
-  //     <div className="min-h-screen flex flex-col items-center justify-center text-white bg-black">
-  //       <p className="text-lg mb-4">No profile found. Please sign in.</p>
-  //       <button
-  //         onClick={() => router.push("/auth")}
-  //         className="w-max p-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition"
-  //       >
-  //         Go to Sign In
-  //       </button>
-  //     </div>
-  //   );
-  // }
-
+ 
   useEffect(() => {
   // if (loading || !user?.id) return; // wait until auth is loaded
 
   const getUserDetails = async () => {
-    const { data, error } = await supabase
+    try{
+        const { data, error } = await supabase
       .from("users")
       .select("*")
       .eq("id", id)
       .single();
-
-    if (error) {
-      setErrorMessage(error.message);
-    } else {
-      setUserProfile(data);
+      setUserProfile(data)
+      if(error)
+      {
+       console.error("error while loading profile",error)
+      }
+    }catch(error)
+    {
+      console.error(error)
     }
   };
 
@@ -70,6 +62,21 @@ useEffect(() => {
     setIsOwnProfile(user.id === userProfile.id);
   }
 }, [user, userProfile]);
+
+ if (user && userProfile===undefined) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-white bg-black">
+        <p className="text-lg mb-4">No profile found. Please sign in.</p>
+        <button
+          onClick={() => router.push("/auth")}
+          className="w-max p-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition"
+        >
+          Go to Sign In
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-[#0d0d1a] to-black text-white px-4 py-6">
       {/* Header Section */}
