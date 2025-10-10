@@ -8,7 +8,7 @@ import { useParams ,useRouter} from "next/navigation";
 import { Cabin_Sketch } from "next/font/google";
 export default function ProfilePage() {
   const {user,loading,signOut}=useAuth()
-  const [userProfile,setUserProfile]=useState<UserProfile>()
+  const [userProfile,setUserProfile]=useState<UserProfile | undefined>(undefined)
   const [errorMessage,setErrorMessage]=useState<string>('')
   const {id}=useParams()
   const [isOwnProfile,setIsOwnProfile]=useState(false)
@@ -63,7 +63,7 @@ useEffect(() => {
   }
 }, [user, userProfile]);
 
- if (user && userProfile===undefined) {
+ if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-white bg-black">
         <p className="text-lg mb-4">No profile found. Please sign in.</p>

@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Template } from "../../../lib/interfaces/interfaces";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../../../contexts/auth-context";
+import { useRouter } from "next/navigation";
 export default function UploadTemplate() {
   const [mode, setMode] = useState<"file" | "prompt">("file");
   const {user}=useAuth()
+const router=useRouter()
   const [uploadStructure,setUploadStructure]=useState<Template>({
     id:0,
     templateTitle:"",
@@ -17,6 +19,8 @@ export default function UploadTemplate() {
     templateThumbnail:null,
     templateFile:null,
   })
+  
+
   const [loading,setLoading]=useState(false)
     function validateUploadForm(data:Template) {
   const errors: string[] = [];
@@ -153,6 +157,19 @@ const UploadThumbnail=async()=>{
     setLoading(false)
   }
   
+  }
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-white bg-black">
+        <p className="text-lg mb-4">No profile found. You Can't upload anything</p>
+        <button
+          onClick={() => router.push("/auth")}
+          className="w-max p-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition"
+        >
+          Go to Sign In
+        </button>
+      </div>
+    );
   }
   return (
     <div className="max-w-md mx-auto p-6 bg-black text-white rounded-lg border border-gray-500">

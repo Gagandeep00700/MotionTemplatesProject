@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../contexts/auth-context";
 import Image from "next/image";
+import { sign } from "node:crypto";
 
 
 export default function Navbar() {
@@ -86,6 +87,7 @@ export default function Navbar() {
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          onClick={signOut}
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 7.165 6 9.388 6 12v2.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
