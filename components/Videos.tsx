@@ -3,37 +3,6 @@ import { supabase } from "@/app/supabaseClient";
 import { useEffect, useState } from "react";
 import { Template, Video } from "../lib/interfaces/interfaces";
 
-const videos = [
-  {
-    id: 1,
-    thumbnail: "/videos/thumbnail1.jpg",
-    video: "/videos/video1.mp4",
-    creator: "NeonPulseFX",
-    logo: "/logos/neon.png",
-  },
-  {
-    id: 2,
-    thumbnail: "/videos/thumbnail2.jpg",
-    video: "/videos/video2.mp4",
-    creator: "PixelAura",
-    logo: "/logos/pixelaura.png",
-  },
-  {
-    id: 3,
-    thumbnail: "/videos/thumbnail3.jpg",
-    video: "/videos/video3.mp4",
-    creator: "MotionCraft",
-    logo: "/logos/motioncraft.png",
-  },
-  {
-    id: 4,
-    thumbnail: "/videos/thumbnail4.jpg",
-    video: "/videos/video4.mp4",
-    creator: "CineFX",
-    logo: "/logos/cinefx.png",
-  },
-];
-
 export default function HomePage() {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [videos, setVideos] = useState<Video[]>();

@@ -11,6 +11,7 @@ export default function EditProfilePage() {
   const [bio, setBio] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [errors, setErrors] = useState<{ username?: string; bio?: string }>({});
+  const [avatar_url,setAvatarUrl]=useState()
   const [errorMessage,setErrorMessage]=useState<string>()
   const [loading,setLoading]=useState(false)
   const [success,setSuccess]=useState(false)
@@ -34,16 +35,16 @@ export default function EditProfilePage() {
     e.preventDefault();
     setLoading(true)
     if (!validate()) return;
-    if (!avatar) {
-        console.log("No file selected");
-        return;
-    }
+    let url:string | undefined="";
     if(user?.id){
-   const url=await uploadProfilePic(user?.id,avatar!)
+      if(avatar)
+      {
+         url=await uploadProfilePic(user?.id,avatar!)
+      }
+   
     // TODO: Submit form data to your backend or supabase
     try{
-      const {data,error}=await supabase.from('users').update({username:username,bio:bio,avatar_url:url}).eq('id',user?.id)
-    console.log(data)
+      const {data,error}=await supabase.from('users').update({username:username,bio:bio,avatar_url:url ? url : avatar_url}).eq('id',user?.id)
     if(error) throw error.message
       setSuccess(true);
       router.push(`/profile/${user.id}`);
@@ -69,9 +70,9 @@ export default function EditProfilePage() {
       if (error) {
         setErrorMessage(error.message);
       } else {
-        
         setUsername(data.username)
         setBio(data.bio)
+        setAvatarUrl(data.avatar_url)
       }
     };
   
