@@ -26,3 +26,6 @@ Thumbs.db
 # Editor settings
 .vscode/
 .idea/
+
+#Project Graph
+Project.tldr

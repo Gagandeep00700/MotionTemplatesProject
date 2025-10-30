@@ -5,6 +5,7 @@ import { useAuth } from "../../../../contexts/auth-context";
 import { supabase } from "@/app/supabaseClient";
 import { UserProfile } from "../../../../lib/interfaces/interfaces";
 import { useParams ,useRouter} from "next/navigation";
+import HomePage from "../../../../components/Videos";
 // import { Cabin_Sketch } from "next/font/google";
 export default function ProfilePage() {
   const {user,loading,signOut}=useAuth()
@@ -139,7 +140,7 @@ useEffect(() => {
 
       {/* Posts List */}
       <main className="mt-6 space-y-4">
-        {posts.map((post) => (
+        {/* {posts.map((post) => (
           <div
             key={post.id}
             className="flex items-start gap-4 bg-[#111122] p-4 rounded-xl shadow-md hover:shadow-lg transition"
@@ -162,7 +163,8 @@ useEffect(() => {
               </div>
             </div>
           </div>
-        ))}
+        ))} */}
+        <HomePage query={`${user.id}`} />
       </main>
     </div>)
 }

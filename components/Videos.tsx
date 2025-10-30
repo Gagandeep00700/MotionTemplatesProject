@@ -2,13 +2,40 @@
 import { supabase } from "@/app/supabaseClient";
 import { useEffect, useState } from "react";
 import { Template, Video } from "../lib/interfaces/interfaces";
+async function handleFollow(follower_id: string, following_id: string) {
+  console.log("hello world")
+  const res = await fetch("/api/follow", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ follower_id, following_id }),
+  });
 
-export default function HomePage() {
+  const data = await res.json();
+  console.log("DATA",data); // { message: "Followed", followed: true }
+}
+
+export default function HomePage({query}) {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [videos, setVideos] = useState<Video[]>();
   useEffect(() => {
     const getAllVideos = async () => {
       try {
+        if(!query)
+        {
+           const { data, error } = await supabase.from("templates").select(`
+          *,
+          users (
+            id,
+            username,
+            email,
+            avatar_url
+          )
+        `)
+        if (data) {
+          setVideos(data);
+        }
+        return
+        }
         const { data, error } = await supabase.from("templates").select(`
           *,
           users (
@@ -17,12 +44,11 @@ export default function HomePage() {
             email,
             avatar_url
           )
-        `);
+        `).eq("user_id",query);
         if (error) {
           console.log("Error while getting videos", error);
         }
-        if(data)
-        {
+        if (data) {
           setVideos(data);
         }
       } catch (error) {
@@ -69,21 +95,41 @@ export default function HomePage() {
                   alt={v.users.username}
                   className="w-7 h-7 rounded-full border border-gray-500"
                 />
-                <p className="text-gray-200 text-sm font-medium">{v.users.username}</p>
+                <p className="text-gray-200 text-sm font-medium">
+                  {v.users.username}
+                </p>
               </div>
+{/* Follow button (shown when not hovering on desktop) */}
+<div
+  className={`absolute bottom-3 right-3 flex items-center space-x-4 transition-opacity duration-300`}
+>
+  <button className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm hover:bg-purple-700 transition" onClick={()=>handleFollow(query,`${v.users.id}`)}>
+    Follow
+  </button>
+</div>
 
-              {/* Buttons (visible only on hover) */}
-              <div className="absolute bottom-3 right-3 flex items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button className="text-gray-300 hover:text-purple-400 transition">
-                  ❤️
-                </button>
-                <button className="text-gray-300 hover:text-purple-400 transition">
-                  💬
-                </button>
-                <button className="text-gray-300 hover:text-purple-400 transition">
-                  ↗️
-                </button>
-              </div>
+{/* Like/Comment/Share buttons (hover on desktop, always visible on mobile) */}
+{/* Desktop Follow button (visible only when NOT hovered) */}
+<div
+  className={`absolute bottom-3 right-3 flex items-center 
+    space-x-4 transition-opacity duration-300
+    opacity-100 sm:group-hover:opacity-0`}
+>
+  <button className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm hover:bg-purple-700 transition">
+    Follow
+  </button>
+</div>
+
+{/* Like/Comment/Share buttons */}
+{/* <div
+  className="absolute bottom-3 right-3 flex items-center space-x-4 
+    opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300"
+>
+  <button className="text-gray-300 hover:text-purple-400 transition">❤️</button>
+  <button className="text-gray-300 hover:text-purple-400 transition">💬</button>
+  <button className="text-gray-300 hover:text-purple-400 transition">↗️</button>
+</div> */}
+
 
               {/* Play Button (center overlay) */}
               {hoveredVideo !== v.id && (

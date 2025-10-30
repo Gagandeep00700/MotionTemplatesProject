@@ -15,7 +15,7 @@ export default function Navbar() {
   { name: "Home", href: "/" },
   { name: "Discover", href: "/discover" },
   { name: "Upload", href: "/upload" },
-  { name: "Leaderboard", href: "/leaderboard" },
+  { name: "Leaderboard", href: "/Leaderboard" },
   { name: "Profile", href: `/profile/${user?.id}` },
 ];
   const pathname = usePathname();
