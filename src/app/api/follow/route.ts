@@ -39,8 +39,11 @@ export async function POST(req: Request) {
     if (followError) throw followError;
 
     return NextResponse.json({ message: "Followed", followed: true });
-  } catch (error:any) {
+  } catch (error) {
     console.error("Error in /api/follow:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const message = error instanceof Error 
+    ? error.message 
+    : "Unknown error occurred";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
