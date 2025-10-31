@@ -14,7 +14,7 @@ async function handleFollow(follower_id: string, following_id: string) {
   console.log("DATA",data); // { message: "Followed", followed: true }
 }
 
-export default function HomePage({query}) {
+export default function HomePage({query}:String) {
   const [hoveredVideo, setHoveredVideo] = useState<number | null>(null);
   const [videos, setVideos] = useState<Video[]>();
   useEffect(() => {
